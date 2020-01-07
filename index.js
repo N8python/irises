@@ -17,17 +17,18 @@ model.compile({
     loss: 'meanSquaredError',
     metrics: "accuracy"
 })
-const acc = predictions => Number(tf.metrics.binaryAccuracy(testLabels, predictions).mean().toString().replace(/[^\d\.]/g, "")).toFixed(3)
+const acc = predictions => Number(tf.metrics.binaryAccuracy(testLabels, predictions).mean().toString().replace(/[^\d\.]/g, ""))
+const percentAcc = predictions => (acc(predictions) * 100).toFixed(3);
 model.fit(data, labels, {
     epochs: 100,
     batchSize: 32,
     callbacks: {
         onBatchEnd(batch, logs) {
             const predictions = model.predict(testData);
-            console.log(`Accuracy: ${acc(predictions)}%`)
+            console.log(`Accuracy: ${percentAcc(predictions)}%`)
         }
     }
 }).then(info => {
     const predictions = model.predict(testData);
-    console.log(`Final accuracy: ${acc(predictions)}`);
+    console.log(`Final accuracy: ${percentAcc(predictions)}%`);
 })
